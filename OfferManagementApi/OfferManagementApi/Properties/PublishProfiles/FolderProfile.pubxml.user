@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>D:\CurrentWork\OfferMagmt\OfferManagementApi\OfferManagementApi\bin\Release\net9.0\publish\</_PublishTargetUrl>
+    <History>True|2025-05-03T09:21:07.4558923Z||;True|2025-05-02T09:56:25.1748503+05:30||;True|2025-05-02T09:43:36.3226021+05:30||;True|2025-04-29T18:53:31.1628178+05:30||;True|2025-04-29T18:41:26.6338162+05:30||;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>
