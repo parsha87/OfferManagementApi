@@ -32,21 +32,33 @@ namespace OfferManagementApi.Controllers
                 var form = HttpContext.Request.Form;
                 InquiryViewModel model = null;
                 model = JsonConvert.DeserializeObject<InquiryViewModel>(HttpContext.Request.Form["model"]);
+                var inquiry = await _inquiryService.SaveInquiryAsync(model);
 
-                var uploadedFile = form.Files.FirstOrDefault();
-                if (uploadedFile != null)
+                // Create upload directory if not exists
+                var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+                if (!Directory.Exists(uploadDir))
+                    Directory.CreateDirectory(uploadDir);
+
+                // Loop through all uploaded files
+                foreach (var file in form.Files)
                 {
-                    var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-                    if (!Directory.Exists(uploadDir))
-                        Directory.CreateDirectory(uploadDir);
-
-                    var filePath = Path.Combine(uploadDir, uploadedFile.FileName);
-                    using var stream = new FileStream(filePath, FileMode.Create);
-                    await uploadedFile.CopyToAsync(stream);
+                    if (file != null && file.Length > 0)
+                    {
+                        string fileExtension = Path.GetExtension(file.FileName);
+                        string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
+                        var filePath = Path.Combine(uploadDir, uniqueFileName);
+                        using var stream = new FileStream(filePath, FileMode.Create);
+                        await file.CopyToAsync(stream);
+                        var attachment = new InquiryAttachmentsRecordsViewModel
+                        {
+                            InquiryId = inquiry,
+                            OriginalFileName = file.FileName,
+                            UniqueFileName = uniqueFileName,
+                        };
+                        await _inquiryService.SaveAttchmentRecord(attachment);
+                    }
                 }
 
-
-                await _inquiryService.SaveInquiryAsync(model);
                 return Ok(new { message = "Inquiry saved successfully." });
             }
             catch (Exception ex)
@@ -131,5 +143,62 @@ namespace OfferManagementApi.Controllers
             await _inquiryService.DeleteInquiryAsync(id);
             return Ok(new { message = "Inquiry deleted successfully." });
         }
+
+        [HttpGet("getFileById/{id}")]
+        public async Task<IActionResult> DownloadFile(int id)
+        {
+            try
+            {
+
+                var attachment = await _inquiryService.GetAttachmentByIdAsync(id);
+
+                if (attachment == null)
+                {
+                    return NotFound("Attachment not found.");
+                }
+                var _fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+                var filePath = Path.Combine(_fileStoragePath, attachment.UniqueFileName);
+
+                // Check if the file exists
+                if (!System.IO.File.Exists(filePath))
+                {
+                    return NotFound("File not found.");
+                }
+
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+
+                // Set the content type for the response (you can change it based on your file type)
+                var contentType = "application/octet-stream"; // You can also use specific types like "application/pdf" for PDFs.
+
+                // Set the file name for the download
+                var fileDownloadName = attachment.OriginalFileName;
+
+                // Return the file as a downloadable attachment
+                return File(fileBytes, contentType, fileDownloadName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+       
+        [HttpDelete("deleteFile/{id}")]
+        public async Task<IActionResult> DeleteFile(int id)
+        {
+            // Delete the file from the storage
+            var _fileStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+
+            var result = await _inquiryService.DeleteAttachmentByIdAsync(id, _fileStoragePath);
+
+            if (!result)
+                return NotFound("File not found.");
+
+            return Ok("File deleted successfully.");
+        }
+
+
     }
 }
+

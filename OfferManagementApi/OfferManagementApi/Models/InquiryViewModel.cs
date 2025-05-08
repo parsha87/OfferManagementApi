@@ -1,4 +1,6 @@
-﻿namespace OfferManagementApi.Models
+﻿using OfferManagementApi.Data.Entities;
+
+namespace OfferManagementApi.Models
 {
     public class InquiryViewModel
     {
@@ -24,5 +26,7 @@
         public DateTime UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public List<TechnicalDetailsMappingViewModel> TechicalDetailsMapping { get; set; }
+
+        public List<InquiryAttachmentsRecordsViewModel> uploadedFiles { get; set; }
     }
 }

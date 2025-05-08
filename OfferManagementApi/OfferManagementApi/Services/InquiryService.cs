@@ -8,12 +8,15 @@ namespace OfferManagementApi.Services
 {
     public interface IInquiryService
     {
-        Task SaveInquiryAsync(InquiryViewModel model);
+        Task<int> SaveInquiryAsync(InquiryViewModel model);
         Task<List<InquiryViewModel>> GetAllInquiriesAsync();
         Task<InquiryViewModel> GetInquiryByIdAsync(int id);
         Task UpdateInquiryAsync(InquiryViewModel model);
         Task DeleteInquiryAsync(int id);
         Task SaveAttchmentRecord(InquiryAttachmentsRecordsViewModel model);
+
+        Task<InquiryAttachmentsRecordsViewModel> GetAttachmentByIdAsync(int attachmentId);
+        Task<bool> DeleteAttachmentByIdAsync(int attachmentId, string fileStoragePath);
     }
     public class InquiryService : IInquiryService
     {
@@ -24,7 +27,7 @@ namespace OfferManagementApi.Services
             _context = context;
         }
 
-        public async Task SaveInquiryAsync(InquiryViewModel model)
+        public async Task<int> SaveInquiryAsync(InquiryViewModel model)
         {
             var today = DateTime.UtcNow.Date;
             var datePart = today.ToString("dd-MM-yy");
@@ -89,7 +92,7 @@ namespace OfferManagementApi.Services
                     Cdf = x.CDF,
                     AmbientTemp = x.AmbientTemp,
                     TempRise = x.TempRise,
-                    Accessories = x.Accessories,
+                    Accessories = string.Join(",", x.Accessories),
                     Brake = x.Brake,
                     EncoderMounting = x.EncoderMounting,
                     EncoderMountingIfYes = x.EncoderMountingIfYes,
@@ -102,6 +105,7 @@ namespace OfferManagementApi.Services
 
             _context.Inquiries.Add(inquiry);
             await _context.SaveChangesAsync();
+            return inquiry.InquiryId; // Assuming InquiryId is the primary key
         }
 
         public async Task SaveAttchmentRecord(InquiryAttachmentsRecordsViewModel model)
@@ -117,72 +121,85 @@ namespace OfferManagementApi.Services
             _context.InquiryAttachmentsRecords.Add(inquiry);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<InquiryAttachmentsRecord>> GetAttachmentsByInquiryId(int inquiryId)
+        {
+            return await _context.InquiryAttachmentsRecords
+                                 .Where(record => record.InquiryId == inquiryId)
+                                 .ToListAsync();
+        }
+
         public async Task<List<InquiryViewModel>> GetAllInquiriesAsync()
         {
-            return await _context.Inquiries
-                .Include(x => x.TechnicalDetailsMappings)
-                .Select(x => new InquiryViewModel
+            var inquiries = await _context.Inquiries
+      .Include(x => x.TechnicalDetailsMappings)
+      .ToListAsync(); // Get the data from the database
+
+            var result = inquiries.Select(x => new InquiryViewModel
+            {
+                InquiryId = x.InquiryId,
+                CustomerType = x.CustomerType,
+                CustomerName = x.CustomerName,
+                CustomerId = (int)x.CustomerId,
+                Region = x.Region,
+                City = x.City,
+                EnquiryNo = x.EnquiryNo,
+                EnquiryDate = (DateTime)x.EnquiryDate,
+                RfqNo = x.RfqNo,
+                RfqDate = (DateTime)x.RfqDate,
+                StdPaymentTerms = x.StdPaymentTerms,
+                StdIncoTerms = x.StdIncoTerms,
+                ListPrice = (decimal)x.ListPrice,
+                Discount = (decimal)x.Discount,
+                NetPriceWithoutGST = (decimal)x.NetPriceWithoutGst,
+                TotalPackage = (decimal)x.TotalPackage,
+                Status = x.Status,
+                CreatedOn = (DateTime)x.CreatedOn,
+                CreatedBy = x.CreatedBy,
+                UpdatedOn = (DateTime)x.UpdatedOn,
+                UpdatedBy = x.UpdatedBy,
+                TechicalDetailsMapping = x.TechnicalDetailsMappings.Select(td => new TechnicalDetailsMappingViewModel
                 {
-                    InquiryId = x.InquiryId,
-                    CustomerType = x.CustomerType,
-                    CustomerName = x.CustomerName,
-                    CustomerId = (int)x.CustomerId,
-                    Region = x.Region,
-                    City = x.City,
-                    EnquiryNo = x.EnquiryNo,
-                    EnquiryDate = (DateTime)x.EnquiryDate,
-                    RfqNo = x.RfqNo,
-                    RfqDate = (DateTime)x.RfqDate,
-                    StdPaymentTerms = x.StdPaymentTerms,
-                    StdIncoTerms = x.StdIncoTerms,
-                    ListPrice = (decimal)x.ListPrice,
-                    Discount = (decimal)x.Discount,
-                    NetPriceWithoutGST = (decimal)x.NetPriceWithoutGst,
-                    TotalPackage = (decimal)x.TotalPackage,
-                    Status = x.Status,
-                    CreatedOn = (DateTime)x.CreatedOn,
-                    CreatedBy = x.CreatedBy,
-                    UpdatedOn = (DateTime)x.UpdatedOn,
-                    UpdatedBy = x.UpdatedBy,
-                    TechicalDetailsMapping = x.TechnicalDetailsMappings.Select(td => new TechnicalDetailsMappingViewModel
-                    {
-                        Id = td.Id,
-                        InquiryId = (int)td.InquiryId,
-                        MotorType = td.MotorType,
-                        KW = td.Kw,
-                        HP = td.Hp,
-                        Phase = td.Phase,
-                        Pole = td.Pole,
-                        FrameSize = td.FrameSize,
-                        DOP = td.Dop,
-                        InsulationClass = td.InsulationClass,
-                        Efficiency = td.Efficiency,
-                        Voltage = td.Voltage,
-                        Frequency = td.Frequency,
-                        Quantity = td.Quantity,
-                        Mounting = td.Mounting,
-                        SafeAreaHazardousArea = td.SafeAreaHazardousArea,
-                        Brand = td.Brand,
-                        IfHazardousArea = td.IfHazardousArea,
-                        TempClass = td.TempClass,
-                        GasGroup = td.GasGroup,
-                        Zone = td.Zone,
-                        HardadousDescription = td.HardadousDescription,
-                        Duty = td.Duty,
-                        StartsPerHour = td.StartsPerHour,
-                        CDF = td.Cdf,
-                        AmbientTemp = td.AmbientTemp,
-                        TempRise = td.TempRise,
-                        Accessories = td.Accessories,
-                        Brake = td.Brake,
-                        EncoderMounting = td.EncoderMounting,
-                        EncoderMountingIfYes = td.EncoderMountingIfYes,
-                        Application = td.Application,
-                        Segment = td.Segment,
-                        Narration = td.Narration,
-                        Amount = (decimal)td.Amount
-                    }).ToList()
-                }).ToListAsync();
+                    Id = td.Id,
+                    InquiryId = (int)td.InquiryId,
+                    MotorType = td.MotorType,
+                    KW = td.Kw,
+                    HP = td.Hp,
+                    Phase = td.Phase,
+                    Pole = td.Pole,
+                    FrameSize = td.FrameSize,
+                    DOP = td.Dop,
+                    InsulationClass = td.InsulationClass,
+                    Efficiency = td.Efficiency,
+                    Voltage = td.Voltage,
+                    Frequency = td.Frequency,
+                    Quantity = td.Quantity,
+                    Mounting = td.Mounting,
+                    SafeAreaHazardousArea = td.SafeAreaHazardousArea,
+                    Brand = td.Brand,
+                    IfHazardousArea = td.IfHazardousArea,
+                    TempClass = td.TempClass,
+                    GasGroup = td.GasGroup,
+                    Zone = td.Zone,
+                    HardadousDescription = td.HardadousDescription,
+                    Duty = td.Duty,
+                    StartsPerHour = td.StartsPerHour,
+                    CDF = td.Cdf,
+                    AmbientTemp = td.AmbientTemp,
+                    TempRise = td.TempRise,
+                    Accessories = string.IsNullOrWhiteSpace(td.Accessories) ? new List<string>() : td.Accessories.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(a => a.Trim())
+                    .ToList(),
+                    Brake = td.Brake,
+                    EncoderMounting = td.EncoderMounting,
+                    EncoderMountingIfYes = td.EncoderMountingIfYes,
+                    Application = td.Application,
+                    Segment = td.Segment,
+                    Narration = td.Narration,
+                    Amount = (decimal)td.Amount
+                }).ToList()
+            }).ToList();
+            return result;
         }
 
         public async Task<InquiryViewModel> GetInquiryByIdAsync(int id)
@@ -190,6 +207,20 @@ namespace OfferManagementApi.Services
             var inquiry = await _context.Inquiries
                 .Include(x => x.TechnicalDetailsMappings)
                 .FirstOrDefaultAsync(x => x.InquiryId == id);
+
+            // Get attachments
+            var attachments = await _context.InquiryAttachmentsRecords
+                .Where(a => a.InquiryId == id)
+                .ToListAsync();
+
+            var uploadedFiles = attachments.Select(a => new InquiryAttachmentsRecordsViewModel
+            {
+                AttachmentId = a.AttachmentId,
+                InquiryId = a.InquiryId,
+                OriginalFileName = a.OriginalFileName,
+                UniqueFileName = a.UniqueFileName,
+                UploadedOn = (DateTime)a.UploadedOn
+            }).ToList();
 
             if (inquiry == null) return null;
 
@@ -245,7 +276,7 @@ namespace OfferManagementApi.Services
                     CDF = td.Cdf,
                     AmbientTemp = td.AmbientTemp,
                     TempRise = td.TempRise,
-                    Accessories = td.Accessories,
+                    Accessories = td.Accessories.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(a => a.Trim()).ToList(),
                     Brake = td.Brake,
                     EncoderMounting = td.EncoderMounting,
                     EncoderMountingIfYes = td.EncoderMountingIfYes,
@@ -253,7 +284,8 @@ namespace OfferManagementApi.Services
                     Segment = td.Segment,
                     Narration = td.Narration,
                     Amount = (decimal)td.Amount
-                }).ToList()
+                }).ToList(),
+                uploadedFiles = uploadedFiles
             };
         }
 
@@ -316,7 +348,7 @@ namespace OfferManagementApi.Services
                 Cdf = x.CDF,
                 AmbientTemp = x.AmbientTemp,
                 TempRise = x.TempRise,
-                Accessories = x.Accessories,
+                Accessories = string.Join(",", x.Accessories),
                 Brake = x.Brake,
                 EncoderMounting = x.EncoderMounting,
                 EncoderMountingIfYes = x.EncoderMountingIfYes,
@@ -343,5 +375,49 @@ namespace OfferManagementApi.Services
 
             await _context.SaveChangesAsync();
         }
+        // Service method to get a single file by its AttachmentId
+        public async Task<InquiryAttachmentsRecordsViewModel> GetAttachmentByIdAsync(int attachmentId)
+        {
+            var attachment = await _context.InquiryAttachmentsRecords
+                .Where(a => a.AttachmentId == attachmentId)
+                .FirstOrDefaultAsync();
+
+            if (attachment == null)
+            {
+                return null; // Or handle the case where the file is not found
+            }
+
+            return new InquiryAttachmentsRecordsViewModel
+            {
+                AttachmentId = attachment.AttachmentId,
+                InquiryId = attachment.InquiryId,
+                OriginalFileName = attachment.OriginalFileName,
+                UniqueFileName = attachment.UniqueFileName,
+                UploadedOn = (DateTime)attachment.UploadedOn
+            };
+        }
+        public async Task<bool> DeleteAttachmentByIdAsync(int attachmentId, string fileStoragePath)
+        {
+            var fileRecord = await _context.InquiryAttachmentsRecords
+                                           .FirstOrDefaultAsync(x => x.AttachmentId == attachmentId);
+
+            if (fileRecord == null)
+                return false;
+
+            // Delete file from disk
+            var fullFilePath = Path.Combine(fileStoragePath, fileRecord.UniqueFileName);
+            if (File.Exists(fullFilePath))
+            {
+                File.Delete(fullFilePath);
+            }
+
+            // Remove record from database
+            _context.InquiryAttachmentsRecords.Remove(fileRecord);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }

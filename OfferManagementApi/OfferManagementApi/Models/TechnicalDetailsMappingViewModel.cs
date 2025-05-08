@@ -29,7 +29,7 @@
         public string? CDF { get; set; }
         public string? AmbientTemp { get; set; }
         public string? TempRise { get; set; }
-        public string? Accessories { get; set; }
+        public List<string> Accessories { get; set; } = new List<string>();
         public string? Brake { get; set; }
         public string? EncoderMounting { get; set; }
         public string? EncoderMountingIfYes { get; set; }
