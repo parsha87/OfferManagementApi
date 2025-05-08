@@ -8,12 +8,15 @@ namespace OfferManagementApi.Services
 {
     public interface IInquiryService
     {
-        Task SaveInquiryAsync(InquiryViewModel model);
+        Task<int> SaveInquiryAsync(InquiryViewModel model);
         Task<List<InquiryViewModel>> GetAllInquiriesAsync();
         Task<InquiryViewModel> GetInquiryByIdAsync(int id);
         Task UpdateInquiryAsync(InquiryViewModel model);
         Task DeleteInquiryAsync(int id);
         Task SaveAttchmentRecord(InquiryAttachmentsRecordsViewModel model);
+
+        Task<InquiryAttachmentsRecordsViewModel> GetAttachmentByIdAsync(int attachmentId);
+        Task<bool> DeleteAttachmentByIdAsync(int attachmentId, string fileStoragePath);
     }
     public class InquiryService : IInquiryService
     {
@@ -24,7 +27,7 @@ namespace OfferManagementApi.Services
             _context = context;
         }
 
-        public async Task SaveInquiryAsync(InquiryViewModel model)
+        public async Task<int> SaveInquiryAsync(InquiryViewModel model)
         {
             var today = DateTime.UtcNow.Date;
             var datePart = today.ToString("dd-MM-yy");
@@ -102,6 +105,7 @@ namespace OfferManagementApi.Services
 
             _context.Inquiries.Add(inquiry);
             await _context.SaveChangesAsync();
+            return inquiry.InquiryId; // Assuming InquiryId is the primary key
         }
 
         public async Task SaveAttchmentRecord(InquiryAttachmentsRecordsViewModel model)
@@ -117,6 +121,14 @@ namespace OfferManagementApi.Services
             _context.InquiryAttachmentsRecords.Add(inquiry);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<InquiryAttachmentsRecord>> GetAttachmentsByInquiryId(int inquiryId)
+        {
+            return await _context.InquiryAttachmentsRecords
+                                 .Where(record => record.InquiryId == inquiryId)
+                                 .ToListAsync();
+        }
+
         public async Task<List<InquiryViewModel>> GetAllInquiriesAsync()
         {
             return await _context.Inquiries
@@ -191,6 +203,20 @@ namespace OfferManagementApi.Services
                 .Include(x => x.TechnicalDetailsMappings)
                 .FirstOrDefaultAsync(x => x.InquiryId == id);
 
+            // Get attachments
+            var attachments = await _context.InquiryAttachmentsRecords
+                .Where(a => a.InquiryId == id)
+                .ToListAsync();
+
+            var uploadedFiles = attachments.Select(a => new InquiryAttachmentsRecordsViewModel
+            {
+                AttachmentId = a.AttachmentId,
+                InquiryId = a.InquiryId,
+                OriginalFileName = a.OriginalFileName,
+                UniqueFileName = a.UniqueFileName,
+                UploadedOn = (DateTime)a.UploadedOn
+            }).ToList();
+
             if (inquiry == null) return null;
 
             return new InquiryViewModel
@@ -253,7 +279,8 @@ namespace OfferManagementApi.Services
                     Segment = td.Segment,
                     Narration = td.Narration,
                     Amount = (decimal)td.Amount
-                }).ToList()
+                }).ToList(),
+                uploadedFiles = uploadedFiles
             };
         }
 
@@ -343,5 +370,49 @@ namespace OfferManagementApi.Services
 
             await _context.SaveChangesAsync();
         }
+        // Service method to get a single file by its AttachmentId
+        public async Task<InquiryAttachmentsRecordsViewModel> GetAttachmentByIdAsync(int attachmentId)
+        {
+            var attachment = await _context.InquiryAttachmentsRecords
+                .Where(a => a.AttachmentId == attachmentId)
+                .FirstOrDefaultAsync();
+
+            if (attachment == null)
+            {
+                return null; // Or handle the case where the file is not found
+            }
+
+            return new InquiryAttachmentsRecordsViewModel
+            {
+                AttachmentId = attachment.AttachmentId,
+                InquiryId = attachment.InquiryId,
+                OriginalFileName = attachment.OriginalFileName,
+                UniqueFileName = attachment.UniqueFileName,
+                UploadedOn = (DateTime)attachment.UploadedOn
+            };
+        }
+        public async Task<bool> DeleteAttachmentByIdAsync(int attachmentId, string fileStoragePath)
+        {
+            var fileRecord = await _context.InquiryAttachmentsRecords
+                                           .FirstOrDefaultAsync(x => x.AttachmentId == attachmentId);
+
+            if (fileRecord == null)
+                return false;
+
+            // Delete file from disk
+            var fullFilePath = Path.Combine(fileStoragePath, fileRecord.UniqueFileName);
+            if (File.Exists(fullFilePath))
+            {
+                File.Delete(fullFilePath);
+            }
+
+            // Remove record from database
+            _context.InquiryAttachmentsRecords.Remove(fileRecord);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+
     }
 }
