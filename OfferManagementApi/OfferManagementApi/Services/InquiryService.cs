@@ -196,7 +196,7 @@ namespace OfferManagementApi.Services
                     Application = td.Application,
                     Segment = td.Segment,
                     Narration = td.Narration,
-                    Amount = (decimal)td.Amount
+                    Amount = td.Amount.HasValue ? td.Amount.Value : 0
                 }).ToList()
             }).ToList();
             return result;
@@ -283,7 +283,7 @@ namespace OfferManagementApi.Services
                     Application = td.Application,
                     Segment = td.Segment,
                     Narration = td.Narration,
-                    Amount = (decimal)td.Amount
+                    Amount = td.Amount.HasValue ? td.Amount.Value : 0
                 }).ToList(),
                 uploadedFiles = uploadedFiles
             };
