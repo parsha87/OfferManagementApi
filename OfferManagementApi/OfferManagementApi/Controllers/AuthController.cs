@@ -47,6 +47,10 @@ namespace OfferManagementApi.Controllers
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
             {
+                if(user.IsActive == false)
+                {
+                    return Unauthorized(new { message = "User account is inactive." });
+                }
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
                 {

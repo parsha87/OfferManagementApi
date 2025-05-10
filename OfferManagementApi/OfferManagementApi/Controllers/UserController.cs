@@ -5,6 +5,7 @@ using OfferManagementApi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using OfferManagementApi.Models;
+using System.Security.Claims;
 
 namespace OfferManagementApi.Controllers
 {
@@ -72,6 +73,7 @@ namespace OfferManagementApi.Controllers
         [Authorize]
         public async Task<IActionResult> GetUsers()
         {
+            string userId = User.Identity.Name;
             var users = await _userManager.Users.ToListAsync();
             var userList = new List<UserWithRolesDto>();
 
@@ -92,7 +94,22 @@ namespace OfferManagementApi.Controllers
                 });
             }
 
-            return Ok(userList);
+            var currentUser = userList.FirstOrDefault(x => x.UserName == userId);
+
+            if (currentUser != null && currentUser.Role == "User")
+            {
+                userList = userList.Where(x => x.Role == "User").ToList();
+                return Ok(userList);
+            }
+            else if (currentUser != null && currentUser.Role == "Admin")
+            {
+                userList = userList.Where(x => x.Role != "SuperAdmin").ToList();
+                return Ok(userList);
+            }
+            else
+            {
+                return Ok(userList);
+            }           
         }
 
         // GET User by ID
