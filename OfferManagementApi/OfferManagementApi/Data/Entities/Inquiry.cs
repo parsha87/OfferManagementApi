@@ -17,13 +17,39 @@ public partial class Inquiry
     [StringLength(200)]
     public string? CustomerName { get; set; }
 
+    [StringLength(100)]
+    public string? CustPhoneNo { get; set; }
+
+    [StringLength(100)]
+    public string? CustAddress { get; set; }
+
     public int? CustomerId { get; set; }
+
+    [StringLength(100)]
+    public string? CustEmail { get; set; }
 
     [StringLength(100)]
     public string? Region { get; set; }
 
     [StringLength(100)]
     public string? City { get; set; }
+
+    [StringLength(100)]
+    public string? State { get; set; }
+
+    [StringLength(100)]
+    public string? Country { get; set; }
+
+    [StringLength(100)]
+    public string? Salutation { get; set; }
+
+    [Column("CPFirstName")]
+    [StringLength(100)]
+    public string? CpfirstName { get; set; }
+
+    [Column("CPLastName")]
+    [StringLength(100)]
+    public string? CplastName { get; set; }
 
     [StringLength(100)]
     public string? EnquiryNo { get; set; }
@@ -57,6 +83,9 @@ public partial class Inquiry
 
     [StringLength(100)]
     public string? Status { get; set; }
+
+    [StringLength(100)]
+    public string? OfferStatus { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? CreatedOn { get; set; }

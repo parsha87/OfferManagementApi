@@ -37,5 +37,6 @@
         public string? Segment { get; set; }
         public string? Narration { get; set; }
         public decimal? Amount { get; set; }
+        public string DeliveryTime { get; set; }
     }
 }

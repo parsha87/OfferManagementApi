@@ -49,8 +49,6 @@ public partial class MainDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.UseCollation("Latin1_General_CI_AI");
-
         modelBuilder.Entity<AspNetRole>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__AspNetRo__3214EC07B18218C7");
@@ -125,7 +123,7 @@ public partial class MainDBContext : DbContext
 
         modelBuilder.Entity<InquiryAttachmentsRecord>(entity =>
         {
-            entity.HasKey(e => e.AttachmentId).HasName("PK__InquiryA__442C64BE734736C2");
+            entity.HasKey(e => e.AttachmentId).HasName("PK__InquiryA__442C64BE041EB285");
 
             entity.Property(e => e.UploadedOn).HasDefaultValueSql("(getdate())");
 

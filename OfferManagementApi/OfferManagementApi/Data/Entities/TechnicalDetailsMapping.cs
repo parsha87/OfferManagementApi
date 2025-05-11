@@ -115,6 +115,8 @@ public partial class TechnicalDetailsMapping
     [Column(TypeName = "decimal(18, 2)")]
     public decimal? Amount { get; set; }
 
+    public string? DeliveryTime { get; set; }
+
     [ForeignKey("InquiryId")]
     [InverseProperty("TechnicalDetailsMappings")]
     public virtual Inquiry? Inquiry { get; set; }

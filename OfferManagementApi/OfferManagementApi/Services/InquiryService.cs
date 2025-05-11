@@ -48,8 +48,16 @@ namespace OfferManagementApi.Services
                 CustomerType = model.CustomerType,
                 CustomerName = model.CustomerName,
                 CustomerId = model.CustomerId,
+                CustPhoneNo = model.CustPhoneNo,
+                CustAddress = model.CustAddress,
+                CustEmail = model.CustEmail,
                 Region = model.Region,
                 City = model.City,
+                State = model.State,
+                Country = model.Country,
+                Salutation = model.Salutation,
+                CpfirstName = model.CpfirstName,
+                CplastName = model.CplastName,
                 EnquiryNo = enquiryNo,
                 EnquiryDate = model.EnquiryDate,
                 RfqNo = rfqNo,
@@ -61,6 +69,7 @@ namespace OfferManagementApi.Services
                 NetPriceWithoutGst = model.NetPriceWithoutGST,
                 TotalPackage = model.TotalPackage,
                 Status = model.Status,
+                OfferStatus = model.OfferStatus,
                 CreatedOn = DateTime.UtcNow,
                 CreatedBy = model.CreatedBy,
                 UpdatedOn = DateTime.UtcNow,
@@ -99,7 +108,8 @@ namespace OfferManagementApi.Services
                     Application = x.Application,
                     Segment = x.Segment,
                     Narration = x.Narration,
-                    Amount = x.Amount
+                    Amount = x.Amount,
+                    DeliveryTime = x.DeliveryTime
                 }).ToList()
             };
 
@@ -141,8 +151,16 @@ namespace OfferManagementApi.Services
                 CustomerType = x.CustomerType,
                 CustomerName = x.CustomerName,
                 CustomerId = (int)x.CustomerId,
+                CustPhoneNo = x.CustPhoneNo,
+                CustAddress = x.CustAddress,
+                CustEmail = x.CustEmail,
                 Region = x.Region,
                 City = x.City,
+                State = x.State,
+                Country = x.Country,
+                Salutation = x.Salutation,
+                CpfirstName = x.CpfirstName,
+                CplastName = x.CplastName,
                 EnquiryNo = x.EnquiryNo,
                 EnquiryDate = (DateTime)x.EnquiryDate,
                 RfqNo = x.RfqNo,
@@ -153,6 +171,7 @@ namespace OfferManagementApi.Services
                 Discount = (decimal)x.Discount,
                 NetPriceWithoutGST = (decimal)x.NetPriceWithoutGst,
                 TotalPackage = (decimal)x.TotalPackage,
+                OfferStatus = x.OfferStatus,
                 Status = x.Status,
                 CreatedOn = (DateTime)x.CreatedOn,
                 CreatedBy = x.CreatedBy,
@@ -196,7 +215,8 @@ namespace OfferManagementApi.Services
                     Application = td.Application,
                     Segment = td.Segment,
                     Narration = td.Narration,
-                    Amount = td.Amount.HasValue ? td.Amount.Value : 0
+                    Amount = td.Amount.HasValue ? td.Amount.Value : 0,
+                    DeliveryTime = td.DeliveryTime
                 }).ToList()
             }).ToList();
             return result;
@@ -230,8 +250,16 @@ namespace OfferManagementApi.Services
                 CustomerType = inquiry.CustomerType,
                 CustomerName = inquiry.CustomerName,
                 CustomerId = (int)inquiry.CustomerId,
+                CustPhoneNo = inquiry.CustPhoneNo,
+                CustAddress = inquiry.CustAddress,
+                CustEmail = inquiry.CustEmail,
                 Region = inquiry.Region,
                 City = inquiry.City,
+                State = inquiry.State,
+                Country = inquiry.Country,
+                Salutation = inquiry.Salutation,
+                CpfirstName = inquiry.CpfirstName,
+                CplastName = inquiry.CplastName,
                 EnquiryNo = inquiry.EnquiryNo,
                 EnquiryDate = (DateTime)inquiry.EnquiryDate,
                 RfqNo = inquiry.RfqNo,
@@ -243,6 +271,7 @@ namespace OfferManagementApi.Services
                 NetPriceWithoutGST = (decimal)inquiry.NetPriceWithoutGst,
                 TotalPackage = (decimal)inquiry.TotalPackage,
                 Status = inquiry.Status,
+                OfferStatus = inquiry.OfferStatus,
                 CreatedOn = (DateTime)inquiry.CreatedOn,
                 CreatedBy = inquiry.CreatedBy,
                 UpdatedOn = (DateTime)inquiry.UpdatedOn,
@@ -283,7 +312,8 @@ namespace OfferManagementApi.Services
                     Application = td.Application,
                     Segment = td.Segment,
                     Narration = td.Narration,
-                    Amount = td.Amount.HasValue ? td.Amount.Value : 0
+                    Amount = td.Amount.HasValue ? td.Amount.Value : 0,
+                    DeliveryTime = td.DeliveryTime
                 }).ToList(),
                 uploadedFiles = uploadedFiles
             };
@@ -301,8 +331,16 @@ namespace OfferManagementApi.Services
             inquiry.CustomerType = model.CustomerType;
             inquiry.CustomerName = model.CustomerName;
             inquiry.CustomerId = model.CustomerId;
+            inquiry.CustPhoneNo = model.CustPhoneNo;
+            inquiry.CustAddress = model.CustAddress;
+            inquiry.CustEmail = model.CustEmail;
             inquiry.Region = model.Region;
             inquiry.City = model.City;
+            inquiry.State = model.State;
+            inquiry.Country = model.Country;
+            inquiry.Salutation = model.Salutation;
+            inquiry.CpfirstName = model.CpfirstName;
+            inquiry.CplastName = model.CplastName;
             inquiry.EnquiryNo = model.EnquiryNo;
             inquiry.EnquiryDate = model.EnquiryDate;
             inquiry.RfqNo = model.RfqNo;
@@ -314,6 +352,7 @@ namespace OfferManagementApi.Services
             inquiry.NetPriceWithoutGst = model.NetPriceWithoutGST;
             inquiry.TotalPackage = model.TotalPackage;
             inquiry.Status = model.Status;
+            inquiry.OfferStatus = model.OfferStatus;
             inquiry.UpdatedOn = DateTime.UtcNow;
             inquiry.UpdatedBy = model.UpdatedBy;
 
@@ -355,7 +394,8 @@ namespace OfferManagementApi.Services
                 Application = x.Application,
                 Segment = x.Segment,
                 Narration = x.Narration,
-                Amount = x.Amount
+                Amount = x.Amount,
+                DeliveryTime = x.DeliveryTime,
             }).ToList();
 
             await _context.SaveChangesAsync();

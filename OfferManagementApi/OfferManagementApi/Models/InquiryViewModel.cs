@@ -1,4 +1,5 @@
 ﻿using OfferManagementApi.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace OfferManagementApi.Models
 {
@@ -8,8 +9,16 @@ namespace OfferManagementApi.Models
         public string CustomerType { get; set; }
         public string CustomerName { get; set; }
         public int CustomerId { get; set; }
+        public string? CustPhoneNo { get; set; }
+        public string? CustAddress { get; set; }
+        public string? CustEmail { get; set; }
         public string? Region { get; set; }
         public string? City { get; set; }
+        public string? State { get; set; }
+        public string? Country { get; set; }
+        public string? Salutation { get; set; }
+        public string? CpfirstName { get; set; }
+        public string? CplastName { get; set; }
         public string? EnquiryNo { get; set; }
         public DateTime EnquiryDate { get; set; }
         public string? RfqNo { get; set; }
@@ -21,6 +30,7 @@ namespace OfferManagementApi.Models
         public decimal NetPriceWithoutGST { get; set; }
         public decimal TotalPackage { get; set; }
         public string? Status { get; set; }
+        public string? OfferStatus { get; set; }
         public DateTime CreatedOn { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime UpdatedOn { get; set; }
