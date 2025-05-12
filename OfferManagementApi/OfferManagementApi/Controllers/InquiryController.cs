@@ -1,9 +1,21 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BitMiracle.LibTiff.Classic;
+using IronPdf.Rendering;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OfferManagementApi.Models;
 using OfferManagementApi.Services;
+using System.Drawing.Printing;
+using System;
+using System.Security.Claims;
+using DinkToPdf;
+using DinkToPdf.Contracts;
+using SelectPdf;
+
 
 namespace OfferManagementApi.Controllers
 {
@@ -12,10 +24,16 @@ namespace OfferManagementApi.Controllers
     public class InquiryController : ControllerBase
     {
         private readonly IInquiryService _inquiryService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IConverter _converter;
 
-        public InquiryController(IInquiryService inquiryService)
+
+        public InquiryController(IInquiryService inquiryService, IConverter converter, IWebHostEnvironment webHostEnvironment)
         {
             _inquiryService = inquiryService;
+            _webHostEnvironment = webHostEnvironment;
+            _converter = converter;
+
         }
 
         //[HttpPost]
@@ -112,7 +130,7 @@ namespace OfferManagementApi.Controllers
                 foreach (var file in form.Files)
                 {
                     if (file != null && file.Length > 0)
-                    {                       
+                    {
                         string fileExtension = Path.GetExtension(file.FileName);
                         string uniqueFileName = Guid.NewGuid().ToString() + fileExtension;
                         var filePath = Path.Combine(uploadDir, uniqueFileName);
@@ -183,7 +201,7 @@ namespace OfferManagementApi.Controllers
             }
         }
 
-       
+
         [HttpDelete("deleteFile/{id}")]
         public async Task<IActionResult> DeleteFile(int id)
         {
@@ -198,6 +216,57 @@ namespace OfferManagementApi.Controllers
             return Ok("File deleted successfully.");
         }
 
+
+
+
+        [HttpPost("downloadPdf")]
+        public async Task<IActionResult> DownloadPdf()
+        {
+            try
+            {
+                string dir = Directory.GetCurrentDirectory();
+                string templatePath = Path.Combine(dir, "samplePdf", "samplePdf.html");
+                string saveAs = $"Compliance_Certificate_{DateTime.Now:MMddyyyy_HHmmss}.pdf";
+                string outputPath = Path.Combine(_webHostEnvironment.ContentRootPath, "outputPdf", saveAs);
+
+                // Load HTML template
+                string htmlBody;
+                using (StreamReader sr = new StreamReader(templatePath))
+                {
+                    htmlBody = await sr.ReadToEndAsync();
+                }
+
+                SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
+                converter.Options.PdfPageSize = PdfPageSize.Custom;
+                converter.Options.PdfPageOrientation = PdfPageOrientation.Portrait;
+                converter.Options.MarginBottom = 30;
+                converter.Options.MarginTop = 30;
+                converter.Options.MarginLeft = 30;
+                converter.Options.MarginRight = 30;
+                Console.WriteLine(htmlBody);
+                SelectPdf.PdfDocument doc = converter.ConvertHtmlString(htmlBody);
+                byte[] pdf = doc.Save();
+                doc.Close();
+                // Assuming you have the path to the generated PDF file
+                string pdfFilePath = outputPath; // Replace this with the actual path
+
+                string mimeType = "application/pdf";
+                byte[] pdfBytes = pdf;
+                System.IO.File.WriteAllBytes(pdfFilePath, pdfBytes);
+                string fileName = System.IO.Path.GetFileName(pdfFilePath);
+                // Optionally, you can delete the file after reading its content
+                System.IO.File.Delete(pdfFilePath);                                   
+
+                return File(pdfBytes, mimeType, fileName);
+
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the exception
+                ModelState.AddModelError("ERROR", "Error while generating PDF: " + ex.Message);
+                return BadRequest(ModelState);
+            }
+        }
 
     }
 }

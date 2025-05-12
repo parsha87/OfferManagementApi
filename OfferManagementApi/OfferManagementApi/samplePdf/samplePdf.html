@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Technical Details PDF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      font-size: 14px;
+    }
+
+    h6 {
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .offer-table {
+      width: auto;
+      float: right;
+    }
+
+    .scrollable-section {
+      overflow-x: auto;
+    }
+
+    .technical-header {
+      display: flex;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .technical-row {
+      display: flex;
+      font-size: 14px;
+    }
+
+    .technical-header div, .technical-row div {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid black;
+    }
+
+    .download-btn {
+      display: inline-block;
+      margin-top: 16px;
+      background-color: #3f51b5;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h6>Technical Details</h6>
+
+  <!-- Custom Offer Header Table -->
+  <table class="offer-table">
+    <thead>
+      <tr>
+        <th>OFFER<br>NUMBER</th>
+        <th>DATE</th>
+        <th>PAGE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>40042673</td>
+        <td>9.5.2025</td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>VERSION</td>
+        <td colspan="2">STATUS</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div style="clear: both;"></div>
+
+  <!-- Ship/Sold To Table -->
+  <table>
+    <tbody>
+      <tr>
+        <td>SHIP TO:</td>
+        <td>SOLD TO: Makharia Electricals Pvt Limited</td>
+      </tr>
+      <tr>
+        <td>ATTENTION: Mr. Rajeshh. Makharia</td>
+        <td>CUSTOMER INQUIRY NUMBER: -</td>
+      </tr>
+      <tr>
+        <td>SUPPLIER CODE:</td>
+        <td>INQUIRY DATE: 5.5.2025</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Scrollable Technical Table -->
+  <div class="scrollable-section">
+    <div style="min-width: 1000px; border: 2px solid black;">
+      <!-- Column Headers -->
+      <div class="technical-header">
+        <div>Column Header 1</div>
+        <div>Column Header 2</div>
+        <!-- Add more headers as needed -->
+      </div>
+      <!-- Data Rows -->
+      <div class="technical-row">
+        <div>Row Data 1</div>
+        <div>Row Data 2</div>
+        <!-- Add more row cells as needed -->
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
