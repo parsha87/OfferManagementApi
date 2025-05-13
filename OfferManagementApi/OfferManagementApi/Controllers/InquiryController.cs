@@ -1,20 +1,11 @@
-﻿using BitMiracle.LibTiff.Classic;
-using IronPdf.Rendering;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using OfferManagementApi.Models;
 using OfferManagementApi.Services;
-using System.Drawing.Printing;
-using System;
-using System.Security.Claims;
-using DinkToPdf;
 using DinkToPdf.Contracts;
 using SelectPdf;
+using System.Text;
+using Microsoft.SqlServer.Server;
 
 
 namespace OfferManagementApi.Controllers
@@ -25,15 +16,14 @@ namespace OfferManagementApi.Controllers
     {
         private readonly IInquiryService _inquiryService;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly IConverter _converter;
+        private readonly ILogger<InquiryController> _logger;
 
 
-        public InquiryController(IInquiryService inquiryService, IConverter converter, IWebHostEnvironment webHostEnvironment)
+        public InquiryController(IInquiryService inquiryService, IWebHostEnvironment webHostEnvironment, ILogger<InquiryController> logger)
         {
             _inquiryService = inquiryService;
             _webHostEnvironment = webHostEnvironment;
-            _converter = converter;
-
+            _logger = logger;
         }
 
         //[HttpPost]
@@ -224,6 +214,9 @@ namespace OfferManagementApi.Controllers
         {
             try
             {
+                _logger.LogInformation("Hello");
+                var form = HttpContext.Request.Form;
+                var model = JsonConvert.DeserializeObject<InquiryViewModel>(form["model"]);
                 string dir = Directory.GetCurrentDirectory();
                 string templatePath = Path.Combine(dir, "samplePdf", "samplePdf.html");
                 string saveAs = $"Compliance_Certificate_{DateTime.Now:MMddyyyy_HHmmss}.pdf";
@@ -235,6 +228,15 @@ namespace OfferManagementApi.Controllers
                 {
                     htmlBody = await sr.ReadToEndAsync();
                 }
+
+                // Inject the technical details table into the placeholder
+                string technicalTableHtml = BuildTechnicalDetailsHtml(model.TechicalDetailsMapping);
+                htmlBody = htmlBody.Replace("#enquiryNo#", model.EnquiryNo);
+                htmlBody = htmlBody.Replace("#date#", DateTime.Now.ToString("dd/MMM/yyyy"));
+                htmlBody = htmlBody.Replace("#customerName#", model.CustomerName);
+                htmlBody = htmlBody.Replace("#cpName#", model.Salutation + " " + model.CpfirstName + " " + model.CplastName);
+                htmlBody = htmlBody.Replace("#enquiryDate#", model.EnquiryDate.ToString("dd/MMM/yyyy"));
+                htmlBody = htmlBody.Replace("{{technicalDetails}}", technicalTableHtml);
 
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
                 converter.Options.PdfPageSize = PdfPageSize.Custom;
@@ -255,18 +257,57 @@ namespace OfferManagementApi.Controllers
                 System.IO.File.WriteAllBytes(pdfFilePath, pdfBytes);
                 string fileName = System.IO.Path.GetFileName(pdfFilePath);
                 // Optionally, you can delete the file after reading its content
-                System.IO.File.Delete(pdfFilePath);                                   
+                System.IO.File.Delete(pdfFilePath);
 
                 return File(pdfBytes, mimeType, fileName);
 
             }
             catch (Exception ex)
             {
+                _logger.LogInformation(ex.Message);
                 // Optionally log the exception
                 ModelState.AddModelError("ERROR", "Error while generating PDF: " + ex.Message);
                 return BadRequest(ModelState);
             }
         }
+
+        private string BuildTechnicalDetailsHtml(List<TechnicalDetailsMappingViewModel> details)
+        {
+            if (details == null || !details.Any()) return "";
+
+            var sb = new StringBuilder();
+
+            sb.AppendLine("<div style='min-width: 1000px;  font-family: Arial, sans-serif;'>");
+
+            // Header row
+            sb.AppendLine(@"
+    <div class='technical-header' style='display: flex; font-weight: bold;  border-top: 1px solid #ccc; background-color: #f0f0f0;'>
+        <div style='width: 100px; padding: 8px;'>Sr.No.</div>
+        <div style='width: 300px; padding: 8px;'>Narration</div>
+        <div style='width: 300px; padding: 8px;'>Delivery Time</div>
+        <div style='width: 100px; padding: 6px;'>Quantity</div>
+        <div style='width: 100px; padding: 6px;'>Unit Price (INR)</div>
+        <div style='width: 100px; padding: 6px;'>Total Amount (INR)</div>
+    </div>");
+
+            // Data rows
+            foreach (var item in details)
+            {
+                sb.AppendLine($@"
+        <div class='technical-row' style='display: flex;'>
+            <div style='width: 100px; padding: 8px;'>{item.RowIndex}</div>
+            <div style='width: 300px; padding: 8px;'>{item.Narration}</div>
+            <div style='width: 300px; padding: 8px;'>{item.DeliveryTime}</div>
+            <div style='width: 100px; padding: 6px;'>{item.Quantity}</div>
+            <div style='width: 100px; padding: 6px;'>{item.Amount:C}</div>
+            <div style='width: 100px; padding: 6px;'>{item.TotalAmount:C}</div>
+        </div>");
+            }
+
+            sb.AppendLine("</div>");
+            return sb.ToString();
+        }
+
 
     }
 }

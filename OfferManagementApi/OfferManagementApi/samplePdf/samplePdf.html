@@ -10,6 +10,12 @@
       font-size: 14px;
     }
 
+  .content-wrapper {
+      border: 2px solid black;
+      padding: 20px;
+      min-width: 1000px;
+    }
+
     h6 {
       margin-bottom: 16px;
       font-size: 18px;
@@ -72,6 +78,7 @@
   </style>
 </head>
 <body>
+  <div class="content-wrapper">
 
   <h6>Technical Details</h6>
 
@@ -86,13 +93,9 @@
     </thead>
     <tbody>
       <tr>
-        <td>40042673</td>
-        <td>9.5.2025</td>
+        <td>#enquiryNo#</td>
+        <td>#date#</td>
         <td>1</td>
-      </tr>
-      <tr>
-        <td>VERSION</td>
-        <td colspan="2">STATUS</td>
       </tr>
     </tbody>
   </table>
@@ -104,36 +107,42 @@
     <tbody>
       <tr>
         <td>SHIP TO:</td>
-        <td>SOLD TO: Makharia Electricals Pvt Limited</td>
+        <td>SOLD TO: #customerName#</td>
       </tr>
       <tr>
-        <td>ATTENTION: Mr. Rajeshh. Makharia</td>
-        <td>CUSTOMER INQUIRY NUMBER: -</td>
-      </tr>
-      <tr>
-        <td>SUPPLIER CODE:</td>
-        <td>INQUIRY DATE: 5.5.2025</td>
+        <td>ATTENTION: #cpName#</td>
+                <td>INQUIRY DATE: #enquiryDate#</td>
+
       </tr>
     </tbody>
   </table>
 
   <!-- Scrollable Technical Table -->
-  <div class="scrollable-section">
-    <div style="min-width: 1000px; border: 2px solid black;">
-      <!-- Column Headers -->
-      <div class="technical-header">
-        <div>Column Header 1</div>
-        <div>Column Header 2</div>
-        <!-- Add more headers as needed -->
-      </div>
-      <!-- Data Rows -->
-      <div class="technical-row">
-        <div>Row Data 1</div>
-        <div>Row Data 2</div>
-        <!-- Add more row cells as needed -->
-      </div>
-    </div>
-  </div>
+  {{technicalDetails}}
 
+<br>
+<br>
+<br>
+<br>
+
+  
+  <p>QUOTE INCLUDING SPECIAL OPTION "SPECIAL CABLE ENTRIES" SINCE REQUEST IS FOR 1xM25 + 1xM20 WHILE CEMP STANDARD CABLE ENTRY WOULD BE 1xM25 ONLY. CUSTOMER TO ADVISE IF SECOND ENTRY IS REQUIRED FOR AUXILIARIES (NOT REQUIRED SO NOT INCLUDED IN THE QUOTE) IE2 EFFICIENCY CONSIDERED ACCORDING TO ECODESIGN - ATEX CERTIFICATE REQUIRED BY YOUR RFQ.</p>
+
+  <p>Note:</p>
+  <ul>
+    <li>18% GST Extra</li>
+    <li>Quoted price is Ex Nava sheva port, price includes sea freight and customs</li>
+    <li>Lead time – 8/10 weeks from the date of manufacturing clearance and after receiving advance + transit time to India (8 Weeks by Sea).</li>
+    <li>Payment: 30% advance, 20% against Manufacturing clearance, 20% against readiness date, and balance against PI once motor reaches India. LD not acceptable.</li>
+    <li>Marathon reserves the right to route the PO through an authorized channel partner during finalization.</li>
+  </ul>
+
+<div style="border: 2px solid black; padding: 16px; margin-top: 20px; font-family: Arial, sans-serif; font-size: 14px;">
+  <p><strong>SHIP METHOD:</strong> NA</p>
+  <p><strong>WARRANTY:</strong> 12 MONTHS FROM DATE OF INSTALLATION OR 18 MONTHS FROM DATE OF INVOICE</p>
+  <p><strong>PACKAGING TYPE:</strong> WOODEN BOX SEA WORTHY PACKING</p>
+  <p><strong>VALIDITY OF OFFER:</strong> 15 Days</p>
+</div>
+</div>
 </body>
 </html>

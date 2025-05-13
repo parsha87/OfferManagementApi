@@ -38,5 +38,9 @@
         public string? Narration { get; set; }
         public decimal? Amount { get; set; }
         public string DeliveryTime { get; set; }
+
+        public int RowIndex { get; set; }
+
+        public int TotalAmount { get; set; }
     }
 }
