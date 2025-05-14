@@ -117,6 +117,9 @@ public partial class TechnicalDetailsMapping
 
     public string? DeliveryTime { get; set; }
 
+    [StringLength(100)]
+    public string? StartType { get; set; }
+
     [ForeignKey("InquiryId")]
     [InverseProperty("TechnicalDetailsMappings")]
     public virtual Inquiry? Inquiry { get; set; }

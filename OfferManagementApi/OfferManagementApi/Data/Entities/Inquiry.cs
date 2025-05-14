@@ -104,4 +104,7 @@ public partial class Inquiry
 
     [InverseProperty("Inquiry")]
     public virtual ICollection<TechnicalDetailsMapping> TechnicalDetailsMappings { get; set; } = new List<TechnicalDetailsMapping>();
+
+    [InverseProperty("Inquiry")]
+    public virtual ICollection<VisitSection> VisitSections { get; set; } = new List<VisitSection>();
 }

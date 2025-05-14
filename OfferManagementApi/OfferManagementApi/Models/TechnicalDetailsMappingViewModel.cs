@@ -42,5 +42,6 @@
         public int RowIndex { get; set; }
 
         public int TotalAmount { get; set; }
+        public string? StartType { get; set; }
     }
 }

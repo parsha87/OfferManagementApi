@@ -109,7 +109,8 @@ namespace OfferManagementApi.Services
                     Segment = x.Segment,
                     Narration = x.Narration,
                     Amount = x.Amount,
-                    DeliveryTime = x.DeliveryTime
+                    DeliveryTime = x.DeliveryTime,
+                    StartType = x.StartType
                 }).ToList()
             };
 
@@ -216,7 +217,17 @@ namespace OfferManagementApi.Services
                     Segment = td.Segment,
                     Narration = td.Narration,
                     Amount = td.Amount.HasValue ? td.Amount.Value : 0,
-                    DeliveryTime = td.DeliveryTime
+                    DeliveryTime = td.DeliveryTime,
+                    StartType = td.StartType,
+                }).ToList(),
+                visitSection = x.VisitSections.Select(vs => new VisitSectionViewModel
+                {
+                    VisitSectionId = vs.VisitSectionId,
+                    InquiryId = (int)vs.InquiryId,
+                    VisitDate = (DateTime)vs.VisitDate,
+                    VisitReason = vs.VisitReason,
+                    VisitKeyPoints = vs.VisitKeyPoints, 
+
                 }).ToList()
             }).ToList();
             return result;
@@ -226,6 +237,7 @@ namespace OfferManagementApi.Services
         {
             var inquiry = await _context.Inquiries
                 .Include(x => x.TechnicalDetailsMappings)
+                 .Include(x => x.VisitSections)
                 .FirstOrDefaultAsync(x => x.InquiryId == id);
 
             // Get attachments
@@ -313,9 +325,18 @@ namespace OfferManagementApi.Services
                     Segment = td.Segment,
                     Narration = td.Narration,
                     Amount = td.Amount.HasValue ? td.Amount.Value : 0,
-                    DeliveryTime = td.DeliveryTime
+                    DeliveryTime = td.DeliveryTime,
+                    StartType = td.StartType,
                 }).ToList(),
-                uploadedFiles = uploadedFiles
+                visitSection = inquiry.VisitSections.Select(vs => new VisitSectionViewModel
+                {
+                    VisitSectionId = vs.VisitSectionId,
+                    InquiryId = (int)vs.InquiryId,
+                    VisitDate = (DateTime)vs.VisitDate,
+                    VisitReason = vs.VisitReason,
+                    VisitKeyPoints = vs.VisitKeyPoints,
+
+                }).ToList()
             };
         }
 
@@ -359,6 +380,7 @@ namespace OfferManagementApi.Services
             // Remove old child records
             _context.TechnicalDetailsMappings.RemoveRange(inquiry.TechnicalDetailsMappings);
 
+
             // Add new child records
             inquiry.TechnicalDetailsMappings = model.TechicalDetailsMapping.Select(x => new TechnicalDetailsMapping
             {
@@ -396,6 +418,23 @@ namespace OfferManagementApi.Services
                 Narration = x.Narration,
                 Amount = x.Amount,
                 DeliveryTime = x.DeliveryTime,
+                StartType = x.StartType,
+
+            }).ToList();
+
+
+            // Remove old Visit Section records
+            _context.VisitSections.RemoveRange(inquiry.VisitSections);
+
+
+
+            inquiry.VisitSections = model.visitSection.Select(vs => new VisitSection
+            {
+                VisitSectionId = vs.VisitSectionId,
+                InquiryId = vs.InquiryId,
+                VisitDate = vs.VisitDate,
+                VisitReason = vs.VisitReason,
+                VisitKeyPoints = vs.VisitKeyPoints
             }).ToList();
 
             await _context.SaveChangesAsync();

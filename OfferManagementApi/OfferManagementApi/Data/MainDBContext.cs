@@ -42,6 +42,8 @@ public partial class MainDBContext : DbContext
 
     public virtual DbSet<TechnicalDetailsMapping> TechnicalDetailsMappings { get; set; }
 
+    public virtual DbSet<VisitSection> VisitSections { get; set; }
+
     public virtual DbSet<Voltage> Voltages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -49,6 +51,8 @@ public partial class MainDBContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.UseCollation("Latin1_General_CI_AI");
+
         modelBuilder.Entity<AspNetRole>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__AspNetRo__3214EC07B18218C7");
@@ -139,9 +143,20 @@ public partial class MainDBContext : DbContext
 
         modelBuilder.Entity<TechnicalDetailsMapping>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Technica__3214EC0713B0B0C9");
+            entity.HasKey(e => e.Id).HasName("PK__Technica__3214EC07469CA1A9");
+
+            entity.Property(e => e.StartType).IsFixedLength();
 
             entity.HasOne(d => d.Inquiry).WithMany(p => p.TechnicalDetailsMappings).HasConstraintName("FK__Technical__Inqui__0A9D95DB");
+        });
+
+        modelBuilder.Entity<VisitSection>(entity =>
+        {
+            entity.HasKey(e => e.VisitSectionId).HasName("PK__VisitSec__EA5EEBBBB4A6EB5A");
+
+            entity.HasOne(d => d.Inquiry).WithMany(p => p.VisitSections)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_VisitSection_Inquiry");
         });
 
         OnModelCreatingPartial(modelBuilder);
