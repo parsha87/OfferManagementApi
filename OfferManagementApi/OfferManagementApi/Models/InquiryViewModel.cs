@@ -39,7 +39,7 @@ namespace OfferManagementApi.Models
 
         public List<TechnicalDetailsMappingViewModel> TechicalDetailsMapping { get; set; }
 
-        public List<InquiryAttachmentsRecordsViewModel> uploadedFiles { get; set; }
+        public List<InquiryAttachmentsRecordsViewModel> UploadedFiles { get; set; }
 
         public List<VisitSectionViewModel> visitSection { get; set; }
     }

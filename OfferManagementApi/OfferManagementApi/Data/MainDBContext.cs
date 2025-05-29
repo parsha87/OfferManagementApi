@@ -143,9 +143,7 @@ public partial class MainDBContext : DbContext
 
         modelBuilder.Entity<TechnicalDetailsMapping>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Technica__3214EC07469CA1A9");
-
-            entity.Property(e => e.StartType).IsFixedLength();
+            entity.HasKey(e => e.Id).HasName("PK__Technica__3214EC07D44993E5");
 
             entity.HasOne(d => d.Inquiry).WithMany(p => p.TechnicalDetailsMappings).HasConstraintName("FK__Technical__Inqui__0A9D95DB");
         });

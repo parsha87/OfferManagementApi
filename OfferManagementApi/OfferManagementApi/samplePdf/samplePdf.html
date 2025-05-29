@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>Technical Details PDF</title>
@@ -10,7 +11,7 @@
       font-size: 14px;
     }
 
-  .content-wrapper {
+    .content-wrapper {
       border: 2px solid black;
       padding: 20px;
       min-width: 1000px;
@@ -27,7 +28,8 @@
       margin-bottom: 16px;
     }
 
-    th, td {
+    th,
+    td {
       border: 1px solid black;
       padding: 8px;
       vertical-align: top;
@@ -58,7 +60,8 @@
       font-size: 14px;
     }
 
-    .technical-header div, .technical-row div {
+    .technical-header div,
+    .technical-row div {
       flex: 1;
       padding: 8px;
       border: 1px solid black;
@@ -75,74 +78,154 @@
       text-align: center;
       cursor: pointer;
     }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow-x: auto;
+      padding: 16px;
+      gap: 16px;
+      /* border: 1px solid #ddd; */
+      /* background: #fffefe; */
+    }
+
+    .logo-row img {
+      height: 60px;
+      object-fit: contain;
+      border-radius: 4px;
+      padding: 4px;
+      /* background-color: white; */
+    }
   </style>
 </head>
+
 <body>
   <div class="content-wrapper">
 
-  <h6>Technical Details</h6>
+    <h6>Technical Details</h6>
 
-  <!-- Custom Offer Header Table -->
-  <table class="offer-table">
-    <thead>
-      <tr>
-        <th>OFFER<br>NUMBER</th>
-        <th>DATE</th>
-        <th>PAGE</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>#enquiryNo#</td>
-        <td>#date#</td>
-        <td>1</td>
-      </tr>
-    </tbody>
-  </table>
+    <img
+      src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/offerImage.jpg"
+      alt="Offer Preview" style="max-width: 100%; height: auto; border-radius: 0px;" />
 
-  <div style="clear: both;"></div>
+    <!-- Custom Offer Header Table -->
+    <table class="offer-table">
+      <thead>
+        <tr>
+          <th>OFFER<br>NUMBER</th>
+          <th>DATE</th>
+          <th>PAGE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>#enquiryNo#</td>
+          <td>#date#</td>
+          <td>1</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- Ship/Sold To Table -->
-  <table>
-    <tbody>
-      <tr>
-        <td>SHIP TO:</td>
-        <td>SOLD TO: #customerName#</td>
-      </tr>
-      <tr>
-        <td>ATTENTION: #cpName#</td>
-                <td>INQUIRY DATE: #enquiryDate#</td>
+    <div style="clear: both;"></div>
 
-      </tr>
-    </tbody>
-  </table>
+    <!-- Ship/Sold To Table -->
+    <table>
+      <tbody>
+        <tr>
+          <td>CUSTOMER NAME: #customerName#</td>
+          <td>SHIPPED TO: #shipTo#</td>
+        </tr>
+        <tr>
+          <td>ATTENTION: #cpName#</td>
+          <td>INQUIRY DATE: #enquiryDate#</td>
 
-  <!-- Scrollable Technical Table -->
-  {{technicalDetails}}
+        </tr>
+      </tbody>
+    </table>
 
-<br>
-<br>
-<br>
-<br>
+    <!-- Scrollable Technical Table -->
+    {{technicalDetails}}
 
-  
-  <p>QUOTE INCLUDING SPECIAL OPTION "SPECIAL CABLE ENTRIES" SINCE REQUEST IS FOR 1xM25 + 1xM20 WHILE CEMP STANDARD CABLE ENTRY WOULD BE 1xM25 ONLY. CUSTOMER TO ADVISE IF SECOND ENTRY IS REQUIRED FOR AUXILIARIES (NOT REQUIRED SO NOT INCLUDED IN THE QUOTE) IE2 EFFICIENCY CONSIDERED ACCORDING TO ECODESIGN - ATEX CERTIFICATE REQUIRED BY YOUR RFQ.</p>
+    <br>
+    <br>
+    <br>
+    <br>
 
-  <p>Note:</p>
-  <ul>
-    <li>18% GST Extra</li>
-    <li>Quoted price is Ex Nava sheva port, price includes sea freight and customs</li>
-    <li>Lead time – 8/10 weeks from the date of manufacturing clearance and after receiving advance + transit time to India (8 Weeks by Sea).</li>
-    <li>Payment: 30% advance, 20% against Manufacturing clearance, 20% against readiness date, and balance against PI once motor reaches India. LD not acceptable.</li>
-    <li>Marathon reserves the right to route the PO through an authorized channel partner during finalization.</li>
-  </ul>
 
-<div style="border: 2px solid black; padding: 16px; margin-top: 20px; font-family: Arial, sans-serif; font-size: 14px;">
-  <p><strong>SHIP METHOD:</strong> NA</p>
-  <p><strong>WARRANTY:</strong> 12 MONTHS FROM DATE OF INSTALLATION OR 18 MONTHS FROM DATE OF INVOICE</p>
-  <p><strong>PACKAGING TYPE:</strong> WOODEN BOX SEA WORTHY PACKING</p>
-  <p><strong>VALIDITY OF OFFER:</strong> 15 Days</p>
-</div>
-</div>
+    <p>QUOTE INCLUDING SPECIAL OPTION "SPECIAL CABLE ENTRIES" SINCE REQUEST IS FOR 1xM25 + 1xM20 WHILE CEMP STANDARD
+      CABLE ENTRY WOULD BE 1xM25 ONLY. CUSTOMER TO ADVISE IF SECOND ENTRY IS REQUIRED FOR AUXILIARIES (NOT REQUIRED SO
+      NOT INCLUDED IN THE QUOTE) IE2 EFFICIENCY CONSIDERED ACCORDING TO ECODESIGN - ATEX CERTIFICATE REQUIRED BY YOUR
+      RFQ.</p>
+
+    <p>Note:</p>
+    <ul>
+      <li>18% GST Extra</li>
+      <li>Quoted price is Ex Nava sheva port, price includes sea freight and customs</li>
+      <li>Lead time – 8/10 weeks from the date of manufacturing clearance and after receiving advance + transit time to
+        India (8 Weeks by Sea).</li>
+      <li>Payment: 30% advance, 20% against Manufacturing clearance, 20% against readiness date, and balance against PI
+        once motor reaches India. LD not acceptable.</li>
+      <li>Marathon reserves the right to route the PO through an authorized channel partner during finalization.</li>
+    </ul>
+
+    <div
+      style="border: 2px solid black; padding: 16px; margin-top: 20px; font-family: Arial, sans-serif; font-size: 14px;">
+      <p><strong>SHIP METHOD:</strong> NA</p>
+      <p><strong>WARRANTY:</strong> 12 MONTHS FROM DATE OF INSTALLATION OR 18 MONTHS FROM DATE OF INVOICE</p>
+      <p><strong>PACKAGING TYPE:</strong> WOODEN BOX SEA WORTHY PACKING</p>
+      <p><strong>VALIDITY OF OFFER:</strong> 15 Days</p>
+    </div>
+
+
+    {{allTechnicalDetails}}
+
+
+    <div class="logo-row" style="margin-top: 50px;">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/marathon.png"
+        alt="Marathon">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/weg.png"
+        alt="Weg">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/cemp.png"
+        alt="Cemp">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/bharatbijlee.jpg"
+        alt="Bharat Bijlee">
+    </div>
+    <div class="logo-row">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/wolong.png"
+        alt="Wolong">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/offerImage.jpg"
+        alt="Offer">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/wolongatb.png"
+        alt="Wolong ATB">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/brookcromton.png"
+        alt="Brook Crompton">
+    </div>
+    <div class="logo-row">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/General_Electric_logo.svg.png"
+        alt="GE">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/kirloskar.jpg"
+        alt="Kirloskar">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/hindustanelectric.jpeg"
+        alt="Hindustan Electric">
+      <img
+        src="D:/Uddhav/OfferManegmantSystem/Api/OfferManagementApi/OfferManagementApi/OfferManagementApi/samplePdf/schorch.jpeg"
+        alt="Schorch">
+    </div>
+
+
+  </div>
 </body>
+
 </html>

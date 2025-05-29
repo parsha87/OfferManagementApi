@@ -288,6 +288,7 @@ namespace OfferManagementApi.Services
                 CreatedBy = inquiry.CreatedBy,
                 UpdatedOn = (DateTime)inquiry.UpdatedOn,
                 UpdatedBy = inquiry.UpdatedBy,
+                UploadedFiles = uploadedFiles ,
                 TechicalDetailsMapping = inquiry.TechnicalDetailsMappings.Select(td => new TechnicalDetailsMappingViewModel
                 {
                     Id = td.Id,

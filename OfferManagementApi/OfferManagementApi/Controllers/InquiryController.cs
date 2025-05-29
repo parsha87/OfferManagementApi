@@ -231,12 +231,16 @@ namespace OfferManagementApi.Controllers
 
                 // Inject the technical details table into the placeholder
                 string technicalTableHtml = BuildTechnicalDetailsHtml(model.TechicalDetailsMapping);
+                string allTechnicalTableHtml = BuildAllTechnicalDetailsHtml(model.TechicalDetailsMapping);
                 htmlBody = htmlBody.Replace("#enquiryNo#", model.EnquiryNo);
                 htmlBody = htmlBody.Replace("#date#", DateTime.Now.ToString("dd/MMM/yyyy"));
                 htmlBody = htmlBody.Replace("#customerName#", model.CustomerName);
                 htmlBody = htmlBody.Replace("#cpName#", model.Salutation + " " + model.CpfirstName + " " + model.CplastName);
                 htmlBody = htmlBody.Replace("#enquiryDate#", model.EnquiryDate.ToString("dd/MMM/yyyy"));
                 htmlBody = htmlBody.Replace("{{technicalDetails}}", technicalTableHtml);
+                htmlBody = htmlBody.Replace("{{allTechnicalDetails}}", allTechnicalTableHtml);
+                htmlBody = htmlBody.Replace("#shipTo#", model.CustAddress);
+                
 
                 SelectPdf.HtmlToPdf converter = new SelectPdf.HtmlToPdf();
                 converter.Options.PdfPageSize = PdfPageSize.Custom;
@@ -308,6 +312,55 @@ namespace OfferManagementApi.Controllers
             return sb.ToString();
         }
 
+
+        private string BuildAllTechnicalDetailsHtml(List<TechnicalDetailsMappingViewModel> details)
+        {
+            if (details == null || !details.Any()) return "";
+
+            var sb = new StringBuilder();
+
+            sb.AppendLine("<div style='min-width: 1000px;  font-family: Arial, sans-serif;'>");
+
+            // Header row
+            sb.AppendLine(@"
+    <div class='technical-header' style='display: flex; font-weight: bold;  border-top: 1px solid #ccc; background-color: #f0f0f0;margin-top: 50px;'>
+        <div style='width: 100px; padding: 6px;'>Sr.No.</div>
+        <div style='width: 300px; padding: 6px;'>Motor Type</div>
+        <div style='width: 300px; padding: 6px;'>KW</div>
+        <div style='width: 100px; padding: 6px;'>HP</div>
+        <div style='width: 100px; padding: 6px;'>Phase</div>
+        <div style='width: 100px; padding: 6px;'>Pole</div>
+        <div style='width: 100px; padding: 6px;'>Type of Start</div>
+        <div style='width: 100px; padding: 6px;'>Frame Size</div>
+        <div style='width: 100px; padding: 6px;'>DOP</div>
+        <div style='width: 100px; padding: 6px;'>Insulation Class</div>
+        <div style='width: 100px; padding: 6px;'>Quantity</div>
+        <div style='width: 100px; padding: 6px;'>Brand</div>
+    </div>");
+
+            // Data rows
+            foreach (var item in details)
+            {
+                sb.AppendLine($@"
+        <div class='technical-row' style='display: flex;'>
+            <div style='width: 100px; padding: 6px;'>{item.RowIndex}</div>
+            <div style='width: 100px; padding: 6px;'>{item.MotorType}</div>
+            <div style='width: 100px; padding: 6px;'>{item.KW}</div>
+            <div style='width: 100px; padding: 6px;'>{item.HP}</div>
+            <div style='width: 100px; padding: 6px;'>{item.Phase}</div>
+            <div style='width: 100px; padding: 6px;'>{item.Pole}</div>
+            <div style='width: 100px; padding: 6px;'>{item.StartType}</div>
+            <div style='width: 100px; padding: 6px;'>{item.FrameSize}</div>
+            <div style='width: 100px; padding: 6px;'>{item.DOP}</div>
+            <div style='width: 100px; padding: 6px;'>{item.InsulationClass}</div>
+            <div style='width: 100px; padding: 6px;'>{item.Quantity}</div>
+            <div style='width: 100px; padding: 6px;'>{item.Brand}</div>
+        </div>");
+            }
+
+            sb.AppendLine("</div>");
+            return sb.ToString();
+        }
 
     }
 }
